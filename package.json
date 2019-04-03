@@ -1,6 +1,6 @@
 {
   "name": "@frontender-magazine/service-api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Common microservice api methods",
   "main": "./lib/index.js",
   "scripts": {
@@ -14,8 +14,8 @@
     "doprepatch": "npm version prepatch && npm publish --tag next --access public",
     "clean": "rimraf public lib",
     "build": "npm run build:dev",
-    "build:prod": "npm run clean && babel source --minified -s true -d lib --ignore __tests__/**,__mocks__/** && npm run build:doc && npm run build:readme",
-    "build:dev": "babel source -s true -d lib --ignore __tests__/**,__mocks__/**",
+    "build:prod": "npm run clean && babel source --out-dir lib --minifie  --ignore source/__tests__/**/*",
+    "build:dev": "babel source -s true -d lib --source-maps inline --ignore source/__tests__/**/*",
     "build:doc": "documentation build source/*.js -o public -f html",
     "build:readme": "documentation readme source/*.js -s 'Documentation'",
     "lint": "npm-run-all lint:*",
