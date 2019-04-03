@@ -1,0 +1,115 @@
+{
+  "name": "@frontender-magazine/service-api",
+  "version": "0.0.0",
+  "description": "Common microservice api methods",
+  "main": "./lib/index.js",
+  "scripts": {
+    "postversion": "git push && git push --tags",
+    "version": "npm run build:prod && git add . -A",
+    "major": "npm version major && npm publish --tag latest --access public",
+    "minor": "npm version minor && npm publish --tag latest --access public",
+    "patch": "npm version patch && npm publish --tag latest --access public",
+    "dopreminor": "npm version preminor && npm publish --tag next --access public",
+    "dopremajor": "npm version premajor && npm publish --tag next --access public",
+    "doprepatch": "npm version prepatch && npm publish --tag next --access public",
+    "clean": "rimraf public lib",
+    "build": "npm run build:dev",
+    "build:prod": "npm run clean && babel source --minified -s true -d lib --ignore __tests__/**,__mocks__/** && npm run build:doc && npm run build:readme",
+    "build:dev": "babel source -s true -d lib --ignore __tests__/**,__mocks__/**",
+    "build:doc": "documentation build source/*.js -o public -f html",
+    "build:readme": "documentation readme source/*.js -s 'Documentation'",
+    "lint": "npm run format && npm-run-all lint:*",
+    "lint:js": "eslint ./source --ext .jsx,.js --color -f stylish --fix",
+    "test": "jest",
+    "precommit": "git add . -A && lint-staged",
+    "commitmsg": "commitplease .git/COMMIT_EDITMSG"
+  },
+  "lint-staged": {
+    "*.{js}": [
+      "eslint --color -f stylish --fix",
+      "git add",
+      "jest --bail --findRelatedTests"
+    ]
+  },
+  "commitplease": {
+    "nohook": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:FrontenderMagazineDevelopment/service-api.git"
+  },
+  "keywords": [
+    "Micro Service",
+    "Frontender Magazine",
+    "API"
+  ],
+  "author": "Anton Nemtsev <thesilentimp@gmail.com>",
+  "license": "CC-BY-4.0",
+  "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
+    "@babel/plugin-proposal-export-namespace-from": "^7.2.0",
+    "@babel/plugin-proposal-function-bind": "^7.2.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/plugin-syntax-export-default-from": "^7.2.0",
+    "@babel/plugin-transform-runtime": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@plasma-platform/tm-message-hook": "^2.0.14",
+    "babel-eslint": "^10.0.1",
+    "commitplease": "^3.2.0",
+    "documentation": "^9.3.1",
+    "enzyme": "^3.9.0",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-config-prettier": "^2.4.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jest": "^21.0.2",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-prettier": "^2.2.0",
+    "eslint-plugin-react": "^7.12.4",
+    "jest": "^24.7.0",
+    "jest-cli": "^24.7.0",
+    "jest-enzyme": "^7.0.2",
+    "lint-staged": "^8.1.5",
+    "minify": "^4.1.1",
+    "nock": "^10.0.6",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^1.16.4",
+    "rimraf": "^2.6.3"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.4.3",
+    "isomorphic-fetch": "^2.2.1",
+    "js-md5": "^0.7.3",
+    "memcached": "^2.2.2",
+    "urlencode": "^1.1.0"
+  },
+  "jest": {
+    "automock": false,
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "!**/__mocks__/**",
+      "!**/__tests__/**",
+      "!source/index.js",
+      "source/*.js"
+    ],
+    "moduleNameMapper": {
+      "^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga|po)$": "<rootDir>/__mocks__/fileMock.js",
+      "^.+\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
+    },
+    "coverageDirectory": "./coverage/",
+    "coverageReporters": [
+      "clover",
+      "json",
+      "text",
+      "html"
+    ],
+    "setupTestFrameworkScriptFile": "./node_modules/jest-enzyme/lib/index.js",
+    "unmockedModulePathPatterns": [],
+    "moduleFileExtensions": [
+      "js",
+      "json"
+    ]
+  }
+}

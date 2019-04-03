@@ -1,0 +1,10 @@
+image: node:8.4.0
+
+pages:
+  script:
+  - npm i
+  - npm t
+  - npm run build:doc
+  artifacts:
+    paths:
+    - public
