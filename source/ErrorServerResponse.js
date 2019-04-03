@@ -19,7 +19,7 @@ export default class ErrorServerResponse extends Error {
    */
   constructor(statusCode, statusText, message = null) {
     super(message);
-    this.name = 'Server Response';
+    this.name = "Server Response";
     this.statusCode = statusCode;
     this.statusText = statusText;
     this.message = message;

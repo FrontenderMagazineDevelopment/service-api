@@ -1,8 +1,8 @@
-import fetch from 'isomorphic-fetch';
-import urlencode from 'urlencode';
-import md5 from 'js-md5';
-import ErrorBadRequest from './ErrorBadRequest';
-import ErrorCache from './ErrorCache';
+import fetch from "isomorphic-fetch";
+import urlencode from "urlencode";
+import md5 from "js-md5";
+import ErrorBadRequest from "./ErrorBadRequest";
+import ErrorCache from "./ErrorCache";
 
 /**
  * TM Micro Service Proto API
@@ -24,15 +24,15 @@ export default class MicroServiceAPI {
    */
   constructor(url, token = null) {
     /**
-    * Service URL
-    * @property {string} service url
-    */
+     * Service URL
+     * @property {string} service url
+     */
     this.url = url;
 
     /**
-    * User access token
-    * @property {string | null} [token = null] - user access tocken if available
-    */
+     * User access token
+     * @property {string | null} [token = null] - user access tocken if available
+     */
     this.token = token;
 
     this.cache =
@@ -44,7 +44,10 @@ export default class MicroServiceAPI {
 
     if (this.cache === true) {
       try {
-        this.cacheConfig = typeof process.env.TM_CACHE_CONFIG === 'string' ? JSON.parse(process.env.TM_CACHE_CONFIG) : process.env.TM_CACHE_CONFIG;
+        this.cacheConfig =
+          typeof process.env.TM_CACHE_CONFIG === "string"
+            ? JSON.parse(process.env.TM_CACHE_CONFIG)
+            : process.env.TM_CACHE_CONFIG;
         this.log = this.cacheConfig.log;
         if (
           this.cacheConfig[this.url] === undefined ||
@@ -57,17 +60,21 @@ export default class MicroServiceAPI {
 
     if (this.cache === true) {
       const Memcached = require('memcached', ); // eslint-disable-line
-      const uri = process.env.TM_CACHE_SERVER || '127.0.0.1:11211';
-      this.memcached = new Memcached(uri, { timeout: this.cacheConfig.timeout });
+      const uri = process.env.TM_CACHE_SERVER || "127.0.0.1:11211";
+      this.memcached = new Memcached(uri, {
+        timeout: this.cacheConfig.timeout
+      });
     }
 
     /**
-    * Service version
-    * @property {string} [version = 'v1'] - service version
-    */
+     * Service version
+     * @property {string} [version = 'v1'] - service version
+     */
     const tmpVersion = this.url.match(/\/v[\d]+(.[\d]+)?(.[\d]+)?/);
     this.version =
-      tmpVersion === null ? 'v1' : MicroServiceAPI.checkVersion(tmpVersion[0].slice(1));
+      tmpVersion === null
+        ? "v1"
+        : MicroServiceAPI.checkVersion(tmpVersion[0].slice(1));
 
     this.setToken = ::this.setToken;
     this.request = ::this.request;
@@ -78,45 +85,44 @@ export default class MicroServiceAPI {
    * @type {Object}
    */
   static messages = {
-    url: 'Wrong Service URL Format',
-    version: 'Wrong Version Format',
-    badRequest: 'Bad Request',
+    url: "Wrong Service URL Format",
+    version: "Wrong Version Format",
+    badRequest: "Bad Request"
   };
 
   /**
-  * Set access token
-  *
-  * @public
-  * @method setToken
-  * @memberof MicroServiceAPI
-  * @param {string} token - access token
-  */
+   * Set access token
+   *
+   * @public
+   * @method setToken
+   * @memberof MicroServiceAPI
+   * @param {string} token - access token
+   */
   setToken = token => {
     this.token = token;
   };
 
   /**
-  * Set service version
-  *
-  * @public
-  * @method setVersion
-  * @memberof MicroServiceAPI
-  * @param {string} version - service version
-  */
+   * Set service version
+   *
+   * @public
+   * @method setVersion
+   * @memberof MicroServiceAPI
+   * @param {string} version - service version
+   */
   setVersion = version => {
     this.version = MicroServiceAPI.checkVersion(version);
   };
 
-
   /**
-  * Validate service version
-  * @method checkVersion
-  * @memberof MicroServiceAPI
-  *
-  * @param  {string} version - service version
-  * @throws {Error} - if URL do not match format Error will be thrown
-  * @return {string} version - service version
-  */
+   * Validate service version
+   * @method checkVersion
+   * @memberof MicroServiceAPI
+   *
+   * @param  {string} version - service version
+   * @throws {Error} - if URL do not match format Error will be thrown
+   * @return {string} version - service version
+   */
   static checkVersion(version) {
     if (!/^v[\d]+(.[\d]+)?(.[\d]+)?$/i.test(version))
       throw new Error(MicroServiceAPI.messages.version);
@@ -144,10 +150,10 @@ export default class MicroServiceAPI {
       statusText: response.statusText,
       redirected: response.redirected,
       headers: {
-        _headers: response.headers.raw(),
+        _headers: response.headers.raw()
       },
       json: null,
-      text: null,
+      text: null
     };
 
     let text = null;
@@ -165,7 +171,7 @@ export default class MicroServiceAPI {
     return {
       ...modified,
       text,
-      json,
+      json
     };
   }
 
@@ -182,7 +188,7 @@ export default class MicroServiceAPI {
    */
   static parseResponse(response) {
     const headers = {
-      ...response.headers,
+      ...response.headers
     };
     headers.get = name => {
       const header = headers._headers[name.toLowerCase()];
@@ -191,7 +197,8 @@ export default class MicroServiceAPI {
     // eslint-disable-next-line
     headers.has = name => headers._headers.hasOwnProperty(name.toLowerCase());
     headers.raw = () => headers._headers;
-    headers.getAll = name => (headers.has(name) ? headers._headers[name.toLowerCase()] : []);
+    headers.getAll = name =>
+      headers.has(name) ? headers._headers[name.toLowerCase()] : [];
     const json = () =>
       new Promise(resolve => {
         resolve(response.json);
@@ -204,10 +211,9 @@ export default class MicroServiceAPI {
       ...response,
       json,
       text,
-      headers,
+      headers
     };
   }
-
 
   /**
    * Add object to memcache
@@ -228,7 +234,6 @@ export default class MicroServiceAPI {
       });
     });
   }
-
 
   /**
    * Get data from memcache
@@ -253,16 +258,16 @@ export default class MicroServiceAPI {
   }
 
   /**
-  * Fetch remote resource
-  *
-  * @method request
-  * @memberof MicroServiceAPI
-  *
-  * @static
-  * @param {string} url - resource url
-  * @param {Object} userOptions - user defined options
-  * @return {Promise} - Promise with server {@link https://developer.mozilla.org/docs/Web/API/Response|Response}
-  */
+   * Fetch remote resource
+   *
+   * @method request
+   * @memberof MicroServiceAPI
+   *
+   * @static
+   * @param {string} url - resource url
+   * @param {Object} userOptions - user defined options
+   * @return {Promise} - Promise with server {@link https://developer.mozilla.org/docs/Web/API/Response|Response}
+   */
   async request(url, userOptions) {
     if (url === undefined) {
       throw new ErrorBadRequest(400, MicroServiceAPI.messages.badRequest);
@@ -271,28 +276,32 @@ export default class MicroServiceAPI {
     let requestEnd;
     if (this.log) requestStart = process.hrtime();
 
-    const updatedUrl = url.replace(/\/v[\d]+(.[\d]+)?(.[\d]+)?/i, `/${this.version}`);
+    const updatedUrl = url.replace(
+      /\/v[\d]+(.[\d]+)?(.[\d]+)?/i,
+      `/${this.version}`
+    );
     let headers = {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Accept: 'application/json; charset=utf-8',
-      'Accept-Encoding': 'deflate, gzip;q=1.0, *;q=0.5',
+      "Content-Type": "application/x-www-form-urlencoded",
+      Accept: "application/json; charset=utf-8",
+      "Accept-Encoding": "deflate, gzip;q=1.0, *;q=0.5"
     };
     if (this.token !== null) {
       headers = {
         ...headers,
-        Authorization: this.token,
+        Authorization: this.token
       };
     }
     const defaultOptions = {
-      method: 'GET',
+      method: "GET",
       headers,
-      data: {},
+      data: {}
     };
 
     const options = { ...defaultOptions, ...userOptions };
     options.headers = { ...headers, ...options.headers };
     const encodedData = urlencode.stringify(options.data);
-    const uri = encodedData.length === 0 ? updatedUrl : `${updatedUrl}?${encodedData}`;
+    const uri =
+      encodedData.length === 0 ? updatedUrl : `${updatedUrl}?${encodedData}`;
     const key = `${uri}---${md5(JSON.stringify(options))}`;
 
     let response;
@@ -310,7 +319,11 @@ export default class MicroServiceAPI {
     if (this.cache === true && response.ok === true) {
       try {
         const serialized = await this.serializeResponse(response.clone());
-        await this.setToMemcached(key, serialized, parseInt(this.cacheConfig[this.url].ttl, 10));
+        await this.setToMemcached(
+          key,
+          serialized,
+          parseInt(this.cacheConfig[this.url].ttl, 10)
+        );
       } catch (error) {
         throw new ErrorCache(error);
       }
@@ -318,11 +331,14 @@ export default class MicroServiceAPI {
 
     if (this.log) {
       requestEnd = process.hrtime();
-      requestStart = parseInt(((requestStart[0] * 1e3) + (requestStart[1]) * 1e-6), 10);
-      requestEnd = parseInt(((requestEnd[0] * 1e3) + (requestEnd[1]) * 1e-6), 10);
+      requestStart = parseInt(
+        requestStart[0] * 1e3 + requestStart[1] * 1e-6,
+        10
+      );
+      requestEnd = parseInt(requestEnd[0] * 1e3 + requestEnd[1] * 1e-6, 10);
 
       console.log(`
-        Запрос: ${options.method === undefined ? 'GET' : options.method} ${uri}
+        Запрос: ${options.method === undefined ? "GET" : options.method} ${uri}
         Время получения данных: ${requestEnd - requestStart} мс.
       `);
     }

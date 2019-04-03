@@ -15,9 +15,9 @@ export default class ErrorCache extends Error {
    */
   constructor(message = null) {
     super(message);
-    this.name = 'Cache failed';
+    this.name = "Cache failed";
     this.statusCode = 500;
-    this.statusText = 'Cache failed';
+    this.statusText = "Cache failed";
     this.message = message;
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, ErrorCache);

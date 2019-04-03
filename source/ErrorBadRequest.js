@@ -15,9 +15,9 @@ export default class ErrorBadRequest extends Error {
    */
   constructor(message = null) {
     super(message);
-    this.name = 'Bad Request';
+    this.name = "Bad Request";
     this.statusCode = 400;
-    this.statusText = 'Bad Request';
+    this.statusText = "Bad Request";
     this.message = message;
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, ErrorBadRequest);
