@@ -6,3 +6,8 @@ node_modules
 .DS_Store
 public
 lib/_tests_
+.babelrc
+.editorconfig
+.eslintignore
+.eslintrc
+.gitlab-ci.yml
