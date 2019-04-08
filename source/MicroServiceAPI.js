@@ -282,7 +282,6 @@ export default class MicroServiceAPI {
     );
     let headers = {
       "Content-Type": "application/x-www-form-urlencoded",
-      Accept: "application/json; charset=utf-8",
       "Accept-Encoding": "deflate, gzip;q=1.0, *;q=0.5"
     };
     if (this.token !== null) {
@@ -314,6 +313,7 @@ export default class MicroServiceAPI {
         }
       } catch (error) {}  // eslint-disable-line
     }
+
     response = await fetch(uri, options);
 
     if (this.cache === true && response.ok === true) {
